@@ -96,6 +96,8 @@ def translate_cities500():
             ):
                 location = geodata[country_code][(longitude, latitude)]
                 if country_code == "CN":
+                    if not location["admin_2"]:
+                        continue
                     if (
                         "admin_2" in cn_pattern
                         and "admin_3" in cn_pattern
