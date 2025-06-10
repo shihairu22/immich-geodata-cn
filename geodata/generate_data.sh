@@ -51,15 +51,28 @@ python generate_geodata_amap.py --data-file ./geoname_data/cities500.txt.tmp
 if [ "$FULL" = true ]; then
   echo "运行额外数据 python generate_geodata_amap.py..."
   python generate_geodata_amap.py --data-file ./geoname_data/extra_data/CN.txt
+  python generate_geodata_amap.py --data-file ./geoname_data/extra_data/MO.txt --country-code MO
+  python generate_geodata_amap.py --data-file ./geoname_data/extra_data/HK.txt --country-code HK
 fi
 
-# 准备列表并运行 generate_geodata_locationiq.py
+# 准备列表并运行 generate_geodata_nominatim.py
+LIST=("TW")
+for item in "${LIST[@]}"; do
+    echo "运行 python generate_geodata_nominatim.py $item..."
+    python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/extra_data/$item.txt
+    if [[ $? -ne 0 ]]; then
+        echo "运行 python generate_geodata_nominatim.py $item 失败！退出。"
+        exit 1
+    fi
+done
+
+# 准备列表并运行 generate_geodata_nominatim.py
 LIST=("JP")
 for item in "${LIST[@]}"; do
-    echo "运行 python generate_geodata_locationiq.py $item..."
-    python generate_geodata_locationiq.py "$item"
+    echo "运行 python generate_geodata_nominatim.py $item..."
+    python generate_geodata_nominatim.py --country-code "$item"
     if [[ $? -ne 0 ]]; then
-        echo "运行 python generate_geodata_locationiq.py $item 失败！退出。"
+        echo "运行 python generate_geodata_nominatim.py --country-code $item 失败！退出。"
         exit 1
     fi
 done

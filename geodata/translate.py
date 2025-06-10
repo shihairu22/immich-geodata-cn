@@ -31,6 +31,10 @@ alternate_name = load_alternate_name(
 converter_t2s = opencc.OpenCC("t2s")  # 繁体转简体
 converter_s2t = opencc.OpenCC("s2t")  # 简体转繁体
 
+country_code_map = {"MO": "澳门特别行政区", "HK": "香港特别行政区"}
+
+admin_1_map = {"MO": "11875160", "HK": "KKC"}
+
 
 def is_chinese(text):
     for char in text:
@@ -95,8 +99,8 @@ def translate_cities500():
                 and (longitude, latitude) in geodata[country_code]
             ):
                 location = geodata[country_code][(longitude, latitude)]
-                if country_code == "CN":
-                    if not location["admin_2"]:
+                if country_code in ["CN", "HK", "MO"]:
+                    if not location["admin_2"] or location["admin_2"] == "中华人民共和国":
                         continue
                     if (
                         "admin_2" in cn_pattern
@@ -104,6 +108,14 @@ def translate_cities500():
                         and location["admin_2"] == location["admin_3"]
                     ):
                         location["admin_2"] = location["admin_1"]
+                    res = cn_pattern.format(**location)
+                elif country_code in ["TW"]:
+                    if not location["admin_2"]:
+                        continue
+                    location["admin_4"] = convert(location["admin_3"], "zh-cn")
+                    location["admin_3"] = convert(location["admin_2"], "zh-cn")
+                    location["admin_2"] = convert(location["admin_1"], "zh-cn")
+                    location["admin_1"] = "台湾省"
                     res = cn_pattern.format(**location)
                 else:
                     res = location["admin_2"]
@@ -143,6 +155,8 @@ def translate_cities500():
                 row[1] = translated_name
                 row[2] = translated_name
 
+            if country_code in admin_1_map:
+                row[10] = admin_1_map[country_code]
             # 写入处理后的行到输出文件
             writer.writerow(row)
 
@@ -163,15 +177,20 @@ def translate_admin1():
             writer = csv.writer(outfile, delimiter="\t")
 
             for row in reader:
-                code = row[3]
+                res = None
+                country_code = row[0].split(".")[0]
+                if country_code in country_code_map:
+                    res = country_code_map[country_code]
+                else:
+                    code = row[3]
 
-                if code in alternate_name:
-                    res = alternate_name[code]
-                    res = convert(res, "zh-cn")
+                    if code in alternate_name:
+                        res = alternate_name[code]
+                        res = convert(res, "zh-cn")
 
-                    if res:
-                        row[1] = res
-                        row[2] = res
+                if res:
+                    row[1] = res
+                    row[2] = res
 
                 # 写入处理后的行到输出文件
                 writer.writerow(row)

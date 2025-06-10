@@ -5,7 +5,7 @@
 - data：文件夹下放着对应国家的坐标到地理位置的数据
 - enhance_data.py：利用 GeoNames 提供的完整数据去增强 cities500.txt
 - generate_geodata_amap.py：利用高德逆地理编码 API 处理 cities500.txt 中对应国家数据，并输出到 data 文件夹下对应 csv
-- generate_geodata_locationiq.py：利用 LocationIQ API 处理 cities500.txt 中对应国家数据，并输出到 data 文件夹下对应 csv
+- generate_geodata_nominatim.py：利用 Nominatim API 处理 cities500.txt 中对应国家数据，并输出到 data 文件夹下对应 csv
 - prepare_geoname_data.sh：从 GeoNames 下载最新数据的脚本
 - release.sh：发布脚本，也是生成数据的脚本，直接运行即可生成所有数据
 - translate.py：翻译 geodata 文件
@@ -55,10 +55,10 @@ bash prepare_geoname_data.sh
 python enhance_data.py
 # 用高德 API 获取国内位置数据
 python generate_geodata_amap.py
-# 用 LocationIQ API 获取国外位置数据
+# 用 nominatim API 获取国外位置数据
 LIST=("JP")
 for item in "${LIST[@]}"; do
-    python generate_geodata_locationiq.py "$item"
+    python generate_geodata_nominatim.py --country-code "$item"
 done
 # 翻译文件
 python translate.py
