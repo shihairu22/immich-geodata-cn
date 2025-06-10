@@ -65,3 +65,9 @@ bash update.sh geodata_admin_2
 # License
 
 GPL
+
+# 💖 支持我
+
+本项目承诺将 **永久免费开放使用**，如果你觉得它对你有帮助，欢迎请我喝杯咖啡 ☕，让这个项目可以持续维护下去并增加更多功能！
+
+<img src="image/sponsor.jpg" alt="赞助" width="400" />
