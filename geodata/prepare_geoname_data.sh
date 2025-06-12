@@ -11,6 +11,8 @@ ADMIN2_FILE="$TARGET_DIR/admin2Codes.txt"
 GEOJESON_FILE="$TARGET_DIR/ne_10m_admin_0_countries.geojson"
 EXTRA_DATA_DIR="$TARGET_DIR/extra_data"
 DOWNLOAD_URL="https://download.geonames.org/export/dump/cities500.zip"
+# 需要增加全量数据的地区列表
+LIST=("CN" "HK" "TW" "MO")
 
 if [[ "$1" == "--update" ]]; then
     if [[ -d "$TARGET_DIR" ]]; then
@@ -38,7 +40,6 @@ fi
 
 mkdir -p "$EXTRA_DATA_DIR"
 
-LIST=("CN" "HK" "TW" "MO")
 for item in "${LIST[@]}"; do
     echo "下载额外数据 $item..."
     curl -o "$EXTRA_DATA_DIR/$item.zip" "https://download.geonames.org/export/dump/$item.zip"

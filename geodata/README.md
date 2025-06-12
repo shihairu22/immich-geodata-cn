@@ -1,17 +1,36 @@
 # 如何生成数据
 
-该文件夹下提供了如下功能的文件：
+本项目提供了以下脚本和目录用于生成和更新地理数据：
 
-- data：文件夹下放着对应国家的坐标到地理位置的数据
-- enhance_data.py：利用 GeoNames 提供的完整数据去增强 cities500.txt
-- generate_geodata_amap.py：利用高德逆地理编码 API 处理 cities500.txt 中对应国家数据，并输出到 data 文件夹下对应 csv
-- generate_geodata_nominatim.py：利用 Nominatim API 处理 cities500.txt 中对应国家数据，并输出到 data 文件夹下对应 csv
-- prepare_geoname_data.sh：从 GeoNames 下载最新数据的脚本
-- release.sh：发布脚本，也是生成数据的脚本，直接运行即可生成所有数据
-- translate.py：翻译 geodata 文件
-- update.sh：自动更新脚本
+- `data/`：用于存放各国家的坐标到地理位置映射结果（CSV 格式）。
+- `dict.txt`：对于部分地名汉化的字典文件。
+- `enhance_data.py`：使用 GeoNames 提供的完整数据增强 `cities500.txt`，提高数据精度。
+- `generate_geodata_amap.py`：使用 **高德地图 API** 对 `cities500.txt` 中指定国家数据进行反向地理编码，生成 CSV 文件输出到 `data/` 目录。
+- `generate_geodata_nominatim.py`：使用 **Nominatim API** 对 `cities500.txt` 进行反向地理编码，生成 CSV 文件输出到 `data/` 目录。
+- `prepare_geoname_data.sh`：从 GeoNames 下载最新原始数据（如 `cities500.txt`）的脚本。
+- `release.sh`：一键生成并打包所有数据的脚本，也是发布用的主脚本，直接运行即可生成完整数据集。
+- `translate.py`：对生成的 geodata 数据进行翻译处理（主要用于地名汉化）。
+- `update.sh`：自动下载并更新 geodata 的脚本，可结合定时任务实现自动化更新。
 
-需要生成数据的话，直接运行 `bash release.sh` 即可。如果需要定制化生成，可以继续往下看。
+需要生成数据的话，直接使用 `bash release.sh` 即可，示例：
+
+```bash
+# 准备 GeoNames 数据
+bash prepare_geoname_data.sh
+# 生成数据
+# cn-pattern：用于控制产出的国内数据的格式，{}内的值会被替换，可选值 admin_1,admin_2,admin_3,admin_4，分别代表不同级别行政区
+# output：输出文件
+# full：是否使用全量数据
+bash generate_data.sh --cn-pattern "{admin_2} {admin_3}" --output "output/geodata.zip" --full
+```
+
+如果需要增加更多地区的详细数据，可以修改脚本内的参数：
+
+- 增加全量数据的地区列表：修改 `prepare_geoname_data.sh` 文件 15L 中的 `LIST` 列表
+- 增加需要用 Nominatim API 查询**基础**数据的地区列表：修改 `generate_data.sh` 文件 70L 中的 `LIST` 列表
+- 增加需要用 Nominatim API 查询**全量**数据的地区列表：修改 `generate_data.sh` 文件 59L 中的 `LIST` 列表
+
+如果需要定制化生成，可以继续往下看。
 
 ## Immich 工作原理
 
