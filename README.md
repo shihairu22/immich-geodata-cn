@@ -12,7 +12,7 @@
 
 # 如何使用
 
-## 1. 下载数据
+### 1. 下载数据
 在 [Release 页面](https://github.com/ZingLix/immich-geodata-cn/releases/latest) 下载 geodata.zip 和 i18n-iso-countries.zip 两个文件并解压
 
 数据发布分为以下两类：  
@@ -39,7 +39,7 @@
 
 </details>
 
-## 2. 配置 Docker 容器映射
+### 2. 配置 Docker 容器映射
 
 修改你的 docker-compose.yaml，在 volumes 中添加以下挂载（或按你的部署方式替换目标文件夹）：
 
@@ -49,14 +49,14 @@ volumes:
   - ./i18n-iso-countries/langs:/usr/src/app/node_modules/i18n-iso-countries/langs
 ```
 
-## 3. 重启 Immich
+### 3. 重启 Immich
 
 运行 `docker compose down && docker compose up` 重启 Immich
   - 启动日志中若出现类似 10000 geodata records imported，说明 geodata 已成功更新。
   - 若无此日志，可尝试修改 geodata/geodata-date.txt 中的日期为当前时间，Immich 只会在文件日期新于上次加载时更新数据。
     ![](./image/importlog.jpg)
 
-## 4. 刷新元数据
+### 4. 刷新元数据
 
 > **注意**：仅在首次使用本项目提供的地理数据时需要执行此步骤，用于更新所有已有照片的位置。  
 > 后续新增照片无需重复此操作。
