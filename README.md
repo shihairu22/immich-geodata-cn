@@ -43,10 +43,20 @@
 
 修改你的 docker-compose.yaml，在 volumes 中添加以下挂载（或按你的部署方式替换目标文件夹）：
 
+如果使用的是官方 `immich-app/immich-server` 镜像，修改路径如下
+
 ```
 volumes:
   - ./geodata:/build/geodata
   - ./i18n-iso-countries/langs:/usr/src/app/node_modules/i18n-iso-countries/langs
+```
+
+如果使用的是 `imagegenius/immich` 镜像，修改路径如下（感谢 huazhaozhe [#18](https://github.com/ZingLix/immich-geodata-cn/discussions/18)）
+
+```
+volumes:
+  - ./geodata:/app/immich/server/geodata
+  - ./i18n-iso-countries/langs:/app/immich/server/node_modules/i18n-iso-countries/langs
 ```
 
 ### 3. 重启 Immich
