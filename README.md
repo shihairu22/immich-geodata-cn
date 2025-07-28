@@ -45,7 +45,13 @@
 
 如果使用的是官方 `immich-app/immich-server` 镜像，修改路径如下
 
-```
+```yaml
+# immich 版本 >= 1.136.0
+volumes:
+  - ./geodata:/build/geodata
+  - ./i18n-iso-countries/langs:/usr/src/app/server/node_modules/i18n-iso-countries/langs
+
+# immich 版本 < 1.136.0 (不含)
 volumes:
   - ./geodata:/build/geodata
   - ./i18n-iso-countries/langs:/usr/src/app/node_modules/i18n-iso-countries/langs
