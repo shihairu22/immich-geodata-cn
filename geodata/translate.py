@@ -92,6 +92,10 @@ def translate_cities500():
             latitude = str(row[4])  # 纬度
             longitude = str(row[5])  # 经度
 
+            admin1_code = row[10]
+            if not admin1_code:
+                continue
+
             translated_name = None
 
             if (
