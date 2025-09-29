@@ -104,7 +104,10 @@ def translate_cities500():
             ):
                 location = geodata[country_code][(longitude, latitude)]
                 if country_code in ["CN", "HK", "MO"]:
-                    if not location["admin_2"] or location["admin_2"] == "中华人民共和国":
+                    if (
+                        not location["admin_2"]
+                        or location["admin_2"] == "中华人民共和国"
+                    ):
                         continue
                     if (
                         "admin_2" in cn_pattern
@@ -112,6 +115,12 @@ def translate_cities500():
                         and location["admin_2"] == location["admin_3"]
                     ):
                         location["admin_2"] = location["admin_1"]
+                    if (
+                        not location["admin_4"]
+                        and "admin_4" in cn_pattern
+                        and "admin_3" not in cn_pattern
+                    ):
+                        location["admin_4"] = location["admin_3"]
                     res = cn_pattern.format(**location)
                 elif country_code in ["TW"]:
                     if not location["admin_2"]:
@@ -159,8 +168,6 @@ def translate_cities500():
                 row[1] = translated_name
                 row[2] = translated_name
 
-            if country_code in admin_1_map:
-                row[10] = admin_1_map[country_code]
             # 写入处理后的行到输出文件
             writer.writerow(row)
 
