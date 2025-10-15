@@ -61,7 +61,7 @@ volumes:
 
 ```
 volumes:
-  - ./geodata:/app/immich/server/geodata
+  - ./geodata:/app/immich/data/geodata
   - ./i18n-iso-countries/langs:/app/immich/server/node_modules/i18n-iso-countries/langs
 ```
 
