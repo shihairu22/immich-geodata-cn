@@ -33,7 +33,32 @@ converter_s2t = opencc.OpenCC("s2t")  # 简体转繁体
 
 country_code_map = {"MO": "澳门特别行政区", "HK": "香港特别行政区"}
 
-admin_1_map = {"MO": "11875160", "HK": "KKC"}
+admin_1_set = set()
+with open("./geoname_data/admin1CodesASCII.txt", "r", encoding="utf-8") as f:
+    for line in f.readlines():
+        parts = line.split("\t")
+        admin_1_set.add(parts[0])
+
+HK_DISTRICTS_MAP = {
+    "元朗区": "新界",
+    "屯门区": "新界",
+    "荃湾区": "新界",
+    "葵青区": "新界",
+    "沙田区": "新界",
+    "大埔区": "新界",
+    "西贡区": "新界",
+    "北区": "新界",
+    "离岛区": "新界",
+    "九龙城区": "九龙",
+    "油尖旺区": "九龙",
+    "深水埗区": "九龙",
+    "黄大仙区": "九龙",
+    "观塘区": "九龙",
+    "中西区": "香港岛",
+    "湾仔区": "香港岛",
+    "东区": "香港岛",
+    "南区": "香港岛",
+}
 
 
 def is_chinese(text):
@@ -93,7 +118,7 @@ def translate_cities500():
             longitude = str(row[5])  # 经度
 
             admin1_code = row[10]
-            if not admin1_code:
+            if not admin1_code or f"{country_code}.{admin1_code}" not in admin_1_set:
                 continue
 
             translated_name = None
@@ -109,6 +134,9 @@ def translate_cities500():
                         or location["admin_2"] == "中华人民共和国"
                     ):
                         continue
+                    # 处理澳门区划名称, admin_2 直接用 admin_1
+                    if country_code == "MO":
+                        location["admin_2"] = location["admin_1"]
                     if (
                         "admin_2" in cn_pattern
                         and "admin_3" in cn_pattern
@@ -121,6 +149,13 @@ def translate_cities500():
                         and "admin_3" not in cn_pattern
                     ):
                         location["admin_4"] = location["admin_3"]
+                    if location["admin_2"].endswith("特别行政区"):
+                        location["admin_2"] = location["admin_2"][:-5]
+                    # 处理香港区划名称,加上新界、九龙、香港岛前缀
+                    if country_code == "HK":
+                        location["admin_3"] = (
+                            f"{HK_DISTRICTS_MAP[location['admin_3']]} {location['admin_3']}"
+                        )
                     res = cn_pattern.format(**location)
                 elif country_code in ["TW"]:
                     if not location["admin_2"]:
