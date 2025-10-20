@@ -29,7 +29,7 @@ body:
     id: immich-version
     attributes:
       label: Immich 版本
-      description: 请提供你使用的 Immich 版本
+      description: 请提供你使用的 Immich 版本，如果使用的是非 Immich 官方镜像也请提供镜像名，例如 `imagegenius/immich`
       placeholder: ex. 1.129.0
     validations:
       required: true
